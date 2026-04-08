@@ -1,0 +1,26 @@
+name: Reporte semanal de acciones
+
+on:
+  schedule:
+    - cron: "0 13 * * 3"   # Miércoles 10:00 hs Argentina (UTC-3)
+  workflow_dispatch:         # También se puede correr manualmente
+
+jobs:
+  enviar-reporte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install yfinance
+
+      - name: Ejecutar script
+        env:
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python stock_report.py
